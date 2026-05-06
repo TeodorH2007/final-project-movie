@@ -30,6 +30,20 @@ app.get("/movies", (req, res) => {
   });
 });
 
+app.get("/movies/:id", (req, res) => {
+  const id = req.params.id;
+  const sql = "SELECT * FROM movies WHERE id = ?";
+  db.get(sql, [id], (error, rows) => {
+    if (error) {
+      return res.status(500).json({ error: "DB error" });
+    }
+    if (!rows) {
+      return res.status(404).json({ error: "Movie not found" });
+    }
+    res.json(rows);
+  });
+});
+
 app.listen(3000, () => {
 console.log("Server is running on port 3000");
 });
