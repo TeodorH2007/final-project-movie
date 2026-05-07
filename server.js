@@ -72,6 +72,37 @@ app.post("/movies", (req, res) => {
   res.status(201).json({"message": "Movie added successfully"});
 });
 
-app.listen(3000, () => {
-console.log("Server is running on port 3000");
+app.put("/movies/:id", (req, res) => {
+  const id = req.params.id;
+  const title = req.body.title;
+  const release_year = req.body.release_year;
+  const genre = req.body.genre;
+  const rating = req.body.rating;
+  const watched = req.body.watched;
+  console.log(title, release_year, genre, rating, watched);
+
+  if(!title){
+    res.status(400).json({"error": "Title is required"});
+    return;
+  }
+
+  if(!release_year){
+    res.status(400).json({"error": "Release year is required"});
+    return;
+  }
+
+  if(!watched){
+    res.status(400).json({"error": "Watched status is required"});
+    return;
+  }
+
+  db.run("UPDATE movies SET title = ?, release_year = ?, genre = ?, rating = ?, watched = ? WHERE id = ?", [title, release_year, genre, rating, watched, id]);
+
+  console.log(`Updating movie with id ${id}`);
+  console.log(`Movie updated in the db: ${title}, ${release_year}, ${genre}, ${rating}, ${watched}`);
+  res.status(200).json({message: `Movie with id ${id} updated in the db: ${title}, ${release_year}, ${genre}, ${rating}, ${watched}`});
+});
+
+app.listen(PORT, () => {
+console.log(`Server is running on port ${PORT}`);
 });
