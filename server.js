@@ -44,6 +44,34 @@ app.get("/movies/:id", (req, res) => {
   });
 });
 
+app.post("/movies", (req, res) => {
+  const title = req.body.title;
+  const release_year = req.body.release_year;
+  const genre = req.body.genre;
+  const rating = req.body.rating;
+  const watched = req.body.watched;
+  console.log(title, release_year, genre, rating, watched);
+
+  if(!title){
+    res.status(400).json({"error": "Title is required"});
+    return;
+  }
+
+  if(!release_year){
+    res.status(400).json({"error": "Release year is required"});
+    return;
+  }
+
+  if(!watched){
+    res.status(400).json({"error": "Watched status is required"});
+    return;
+  }
+
+  db.run("INSERT INTO movies (title, release_year, genre, rating, watched) VALUES (?, ?, ?, ?, ?)", [title, release_year, genre, rating, watched]);
+
+  res.status(201).json({"message": "Movie added successfully"});
+});
+
 app.listen(3000, () => {
 console.log("Server is running on port 3000");
 });
