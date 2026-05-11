@@ -103,6 +103,18 @@ app.put("/movies/:id", (req, res) => {
   res.status(200).json({message: `Movie with id ${id} updated in the db: ${title}, ${release_year}, ${genre}, ${rating}, ${watched}`});
 });
 
+app.delete("/movies/:id", (req, res) => {
+const id = req.params.id;
+
+if (id === undefined || id === null) {
+return res.status(400).send("Invalid movie ID");
+}
+
+
+db.run("DELETE FROM movies WHERE id = ?", [id]);
+res.status(200).send("Movie successfully deleted");
+});
+
 app.listen(PORT, () => {
 console.log(`Server is running on port ${PORT}`);
 });
