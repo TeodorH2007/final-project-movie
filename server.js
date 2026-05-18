@@ -104,15 +104,21 @@ app.put("/movies/:id", (req, res) => {
 });
 
 app.delete("/movies/:id", (req, res) => {
-const id = req.params.id;
+  const id = req.params.id;
 
-if (id === undefined || id === null) {
-return res.status(400).send("Invalid movie ID");
-}
+  db.run("DELETE FROM movies WHERE id = ?", [id], function(error) {
+    if (error) {
+      return res.status(500).json({ error: "DB error" });
+    }
 
+    if (this.changes === 0) {
+      return res.status(404).json({ error: "Movie not found" });
+    }
 
-db.run("DELETE FROM movies WHERE id = ?", [id]);
-res.status(200).send("Movie successfully deleted");
+    res.status(200).json({
+      message: `Movie with id ${id} deleted successfully`
+    });
+  });
 });
 
 app.listen(PORT, () => {
