@@ -81,6 +81,16 @@ app.post("/movies", (req, res) => {
     return;
   }
 
+  if (typeof watched !== "boolean") {
+    res.status(400).json({"error": "Watched status must be a boolean"});
+    return;
+  }
+
+  if (rating !== undefined && typeof rating !== "number") {
+    res.status(400).json({"error": "Rating must be a number"});
+    return;
+  }
+
   db.run("INSERT INTO movies (title, release_year, genre, rating, watched) VALUES (?, ?, ?, ?, ?)", [title, release_year, genre, rating, watched]);
 
   res.status(201).json({"message": "Movie added successfully"});
@@ -105,8 +115,18 @@ app.put("/movies/:id", (req, res) => {
     return;
   }
 
-  if(!watched){
+  if (watched === undefined) {
     res.status(400).json({"error": "Watched status is required"});
+    return;
+  }
+
+  if (typeof watched !== "boolean") {
+    res.status(400).json({"error": "Watched status must be a boolean"});
+    return;
+  }
+
+  if (rating !== undefined && typeof rating !== "number") {
+    res.status(400).json({"error": "Rating must be a number"});
     return;
   }
 
