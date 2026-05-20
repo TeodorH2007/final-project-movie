@@ -21,12 +21,26 @@ res.send("Hello from my server!");
 });
 
 app.get("/movies", (req, res) => {
-  db.all("SELECT * FROM movies", (error, rows) => {
-    if (rows.length === 0) {
-      res.status(200).json({"message": "No movies found"});
-      return;
+  const genre = req.query.genre;
+
+  let sql = "SELECT * FROM movies";
+  let params = [];
+
+  if (genre) {
+    sql += " WHERE genre = ?";
+    params.push(genre);
+  }
+
+  db.all(sql, params, (error, rows) => {
+    if (error) {
+      return res.status(500).json({ error: "DB error" });
     }
-    res.json(rows);
+
+    if (rows.length === 0) {
+      return res.status(404).json({ message: "No movies found" });
+    }
+
+    res.status(200).json(rows);
   });
 });
 
@@ -96,11 +110,23 @@ app.put("/movies/:id", (req, res) => {
     return;
   }
 
-  db.run("UPDATE movies SET title = ?, release_year = ?, genre = ?, rating = ?, watched = ? WHERE id = ?", [title, release_year, genre, rating, watched, id]);
+  if (this.changes === 0) {
+    return res.status(404).json({ error: "Movie not found" });
+  }
 
-  console.log(`Updating movie with id ${id}`);
-  console.log(`Movie updated in the db: ${title}, ${release_year}, ${genre}, ${rating}, ${watched}`);
-  res.status(200).json({message: `Movie with id ${id} updated in the db: ${title}, ${release_year}, ${genre}, ${rating}, ${watched}`});
+  db.run("UPDATE movies SET title = ?, release_year = ?, genre = ?, rating = ?, watched = ? WHERE id = ?", [title, release_year, genre, rating, watched, id], function(error) {
+    if (error) {
+      return res.status(500).json({ error: "DB error" });
+    }
+
+    if (this.changes === 0) {
+      return res.status(404).json({ error: "Movie not found" });
+    }
+
+    res.status(200).json({
+      message: `Movie with id ${id} updated successfully`
+    });
+  });
 });
 
 app.delete("/movies/:id", (req, res) => {
