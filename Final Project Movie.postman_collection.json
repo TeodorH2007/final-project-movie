@@ -134,7 +134,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{ \r\n    \"title\": \"Bee Movie\",\r\n    \"release_year\": \"2007\",\r\n    \"genre\": \"Comedy\",\r\n    \"rating\": \"7\",\r\n    \"watched\": 1\r\n}",
+          "raw": "{ \r\n    \"title\": \"Bee Movie\",\r\n    \"release_year\": \"2007\",\r\n    \"genre\": \"Comedy\",\r\n    \"rating\": 7,\r\n    \"watched\": true\r\n}",
           "options": {
             "raw": {
               "language": "json"

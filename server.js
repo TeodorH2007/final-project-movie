@@ -76,14 +76,12 @@ app.post("/movies", (req, res) => {
     return;
   }
 
-  if(!watched){
-    res.status(400).json({"error": "Watched status is required"});
-    return;
+  if (watched === undefined) {
+    return res.status(400).json({ error: "Watched status is required" });
   }
 
   if (typeof watched !== "boolean") {
-    res.status(400).json({"error": "Watched status must be a boolean"});
-    return;
+    return res.status(400).json({ error: "Watched status must be a boolean" });
   }
 
   if (rating !== undefined && typeof rating !== "number") {
@@ -116,22 +114,16 @@ app.put("/movies/:id", (req, res) => {
   }
 
   if (watched === undefined) {
-    res.status(400).json({"error": "Watched status is required"});
-    return;
+    return res.status(400).json({ error: "Watched status is required" });
   }
 
   if (typeof watched !== "boolean") {
-    res.status(400).json({"error": "Watched status must be a boolean"});
-    return;
+    return res.status(400).json({ error: "Watched status must be a boolean" });
   }
 
   if (rating !== undefined && typeof rating !== "number") {
     res.status(400).json({"error": "Rating must be a number"});
     return;
-  }
-
-  if (this.changes === 0) {
-    return res.status(404).json({ error: "Movie not found" });
   }
 
   db.run("UPDATE movies SET title = ?, release_year = ?, genre = ?, rating = ?, watched = ? WHERE id = ?", [title, release_year, genre, rating, watched, id], function(error) {
